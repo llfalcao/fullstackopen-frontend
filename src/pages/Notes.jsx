@@ -3,7 +3,8 @@ import axios from 'axios';
 
 const Note = ({ note }) => <li>{note.content}</li>;
 
-export default function Notes() {
+const Notes = () => {
+  document.title = 'Full Stack Open - Notes';
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
@@ -50,4 +51,6 @@ export default function Notes() {
       </form>
     </div>
   );
-}
+};
+
+export default Notes;

@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom';
 
-export default function Home() {
+const Home = () => {
+  document.title = 'Full Stack Open Projects - @llfalcao';
+
   return (
     <div>
       <h1>FullStackOpen Projects</h1>
-      <a href="https://fullstackopen.com/">About the course</a>
+      <a href="https://fullstackopen.com/" target="_blank" rel="noreferrer">
+        About the course
+      </a>
 
       <nav
         style={{
@@ -22,4 +26,6 @@ export default function Home() {
       </nav>
     </div>
   );
-}
+};
+
+export default Home;

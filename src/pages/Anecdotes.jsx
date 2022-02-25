@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-export default function Anecdotes() {
+const Anecdotes = () => {
+  document.title = 'Full Stack Open - Anecdotes';
+
   const anecdotes = [
     'If it hurts, do it more often',
     'Adding manpower to a late software project makes it later!',
@@ -46,4 +48,6 @@ export default function Anecdotes() {
       <p>with {votes[best < 0 ? selected : best]} votes.</p>
     </div>
   );
-}
+};
+
+export default Anecdotes;

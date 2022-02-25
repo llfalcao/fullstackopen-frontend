@@ -1,68 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Person = ({ name, number }) => {
-  return (
-    <li>
-      {name} {number}
-    </li>
-  );
-};
+import Filter from '../components/phonebook/Filter';
+import PersonForm from '../components/phonebook/PersonForm';
+import Persons from '../components/phonebook/Persons';
 
-const Persons = ({ persons, filter, searchResults }) => {
-  const personsToShow = filter.length > 0 ? searchResults : persons;
-
-  return (
-    <ul>
-      {personsToShow.map((person) => (
-        <Person key={person.id} name={person.name} number={person.number} />
-      ))}
-    </ul>
-  );
-};
-
-const PersonForm = ({
-  newName,
-  setNewName,
-  newNumber,
-  setNewNumber,
-  addPerson,
-}) => {
-  return (
-    <form onSubmit={addPerson}>
-      <div>
-        Name:{' '}
-        <input
-          type="text"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-        />
-      </div>
-      <div>
-        Number{' '}
-        <input
-          type="text"
-          value={newNumber}
-          onChange={(e) => setNewNumber(e.target.value)}
-        />
-      </div>
-      <div>
-        <button type="submit">Add</button>
-      </div>
-    </form>
-  );
-};
-
-const Filter = ({ filter, handleFilter }) => {
-  return (
-    <div>
-      <label htmlFor="search">Search</label>
-      <input id="search" type="text" value={filter} onChange={handleFilter} />
-    </div>
-  );
-};
-
-export default function Phonebook() {
+const Phonebook = () => {
+  document.title = 'Full Stack Open - Phonebook';
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
@@ -115,4 +59,6 @@ export default function Phonebook() {
       />
     </div>
   );
-}
+};
+
+export default Phonebook;
