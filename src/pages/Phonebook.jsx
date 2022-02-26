@@ -25,17 +25,31 @@ const Phonebook = () => {
   const addPerson = (e) => {
     e.preventDefault();
     if (newName === '' || newNumber === '') return;
-    if (persons.some((p) => p.name.toLowerCase() === newName.toLowerCase())) {
-      return alert(`${newName} is already added to the phonebook`);
+    const personObject = { name: newName, number: newNumber };
+    const match = persons.find((p) => {
+      return p.name.toLowerCase() === newName.toLowerCase();
+    });
+    const shouldUpdate =
+      match &&
+      window.confirm(
+        `${newName} is already added to the phonebook.\nReplace the old number with the new one?`,
+      );
+
+    if (shouldUpdate) {
+      personService
+        .update(match.id, personObject)
+        .then((returnedPerson) =>
+          setPersons(
+            persons.map((p) =>
+              p.id !== returnedPerson.id ? p : returnedPerson,
+            ),
+          ),
+        );
+      return;
     }
 
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    };
-
     personService
-      .create(newPerson)
+      .create(personObject)
       .then((returnedPerson) => setPersons(persons.concat(returnedPerson)));
   };
 
