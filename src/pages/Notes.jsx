@@ -3,6 +3,7 @@ import noteService from '../services/notes';
 import Note from '../components/notes/Note';
 import Notification from '../components/notes/Notification';
 import NoteForm from '../components/notes/NoteForm';
+import Footer from '../components/notes/Footer';
 
 const Notes = () => {
   document.title = 'Full Stack Open - Notes';
@@ -78,6 +79,7 @@ const Notes = () => {
           />
         ))}
       </ul>
+      <Footer />
     </div>
   );
 };
