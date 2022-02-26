@@ -1,7 +1,18 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Note = ({ note }) => <li>{note.content}</li>;
+const Note = ({ note, toggleImportance }) => {
+  const label = note.important ? 'Make not important' : 'Make important';
+
+  return (
+    <li>
+      {note.content}
+      <button type="button" onClick={toggleImportance}>
+        {label}
+      </button>
+    </li>
+  );
+};
 
 const Notes = () => {
   document.title = 'Full Stack Open - Notes';
@@ -12,7 +23,7 @@ const Notes = () => {
 
   useEffect(() => {
     axios
-      .get('https://yf9spi.sse.codesandbox.io/notes')
+      .get('http://localhost:3001/notes')
       .then((response) => setNotes(response.data));
   }, []);
 
@@ -27,12 +38,25 @@ const Notes = () => {
       important: Math.random() < 0.5,
     };
 
-    axios
-      .post('https://yf9spi.sse.codesandbox.io/notes', note)
-      .then((response) => {
-        setNotes(notes.concat(response.data));
-        setNewNote('');
-      });
+    axios.post('http://localhost:3001/notes', note).then((response) => {
+      setNotes(notes.concat(response.data));
+      setNewNote('');
+    });
+  };
+
+  const toggleImportanceOf = async (id) => {
+    const url = `http://localhost:3001/notes/${id}`;
+    const note = notes.find((n) => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    axios.put(url, changedNote).then((response) =>
+      setNotes(
+        notes.map((note) => {
+          if (note.id !== response.data.id) return note;
+          return response.data;
+        }),
+      ),
+    );
   };
 
   return (
@@ -46,7 +70,11 @@ const Notes = () => {
       <label htmlFor="important">Important</label>
       <ul>
         {notesToShow.map((note) => (
-          <Note key={note.id} note={note} />
+          <Note
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         ))}
       </ul>
       <form onSubmit={addNote}>

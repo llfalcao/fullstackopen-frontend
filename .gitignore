@@ -24,3 +24,6 @@ yarn-error.log*
 
 # env
 .env
+
+# mock db
+/db.json
