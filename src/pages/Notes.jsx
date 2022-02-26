@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react';
 import noteService from '../services/notes';
-
-const Note = ({ note, toggleImportance }) => {
-  const label = note.important ? 'Make not important' : 'Make important';
-
-  return (
-    <li>
-      {note.content}
-      <button type="button" onClick={toggleImportance}>
-        {label}
-      </button>
-    </li>
-  );
-};
+import Note from '../components/notes/Notes';
 
 const Notes = () => {
   document.title = 'Full Stack Open - Notes';
