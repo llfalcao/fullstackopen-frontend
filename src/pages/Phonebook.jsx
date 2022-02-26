@@ -4,6 +4,7 @@ import personService from '../services/persons';
 import Filter from '../components/phonebook/Filter';
 import PersonForm from '../components/phonebook/PersonForm';
 import Persons from '../components/phonebook/Persons';
+import Notification from '../components/phonebook/Notification';
 
 const Phonebook = () => {
   document.title = 'Full Stack Open - Phonebook';
@@ -11,6 +12,7 @@ const Phonebook = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState(null);
 
   const searchResults = persons.filter((p) => {
     const name = p.name.toLowerCase();
@@ -22,6 +24,25 @@ const Phonebook = () => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
 
+  useEffect(() => {
+    const notificationTimeout = setTimeout(() => setMessage(null), 5000);
+    return () => clearTimeout(notificationTimeout);
+  }, [message]);
+
+  const updatePerson = (match, personObject) => {
+    const msg = `${newName} is already added to the phonebook.\nReplace the old number with the new one?`;
+    const shouldUpdate = window.confirm(msg);
+    if (!shouldUpdate) return;
+
+    personService.update(match.id, personObject).then((returnedPerson) => {
+      setPersons(
+        persons.map((p) => (p.id !== returnedPerson.id ? p : returnedPerson)),
+      );
+      setMessage(`Updated ${returnedPerson.name}`);
+    });
+    return;
+  };
+
   const addPerson = (e) => {
     e.preventDefault();
     if (newName === '' || newNumber === '') return;
@@ -29,36 +50,25 @@ const Phonebook = () => {
     const match = persons.find((p) => {
       return p.name.toLowerCase() === newName.toLowerCase();
     });
-    const shouldUpdate =
-      match &&
-      window.confirm(
-        `${newName} is already added to the phonebook.\nReplace the old number with the new one?`,
-      );
 
-    if (shouldUpdate) {
-      personService
-        .update(match.id, personObject)
-        .then((returnedPerson) =>
-          setPersons(
-            persons.map((p) =>
-              p.id !== returnedPerson.id ? p : returnedPerson,
-            ),
-          ),
-        );
+    if (match) {
+      updatePerson(match, personObject);
       return;
     }
 
-    personService
-      .create(personObject)
-      .then((returnedPerson) => setPersons(persons.concat(returnedPerson)));
+    personService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setMessage(`Added ${returnedPerson.name}`);
+    });
   };
 
   const deletePerson = (person) => {
     const shouldDelete = window.confirm(`Delete ${person.name}?`);
     if (shouldDelete) {
-      personService
-        .remove(person.id)
-        .then(() => setPersons(persons.filter((n) => n.id !== person.id)));
+      personService.remove(person.id).then(() => {
+        setPersons(persons.filter((n) => n.id !== person.id));
+        setMessage(`Deleted ${person.name}`);
+      });
     }
   };
 
@@ -67,6 +77,7 @@ const Phonebook = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <PersonForm
         newName={newName}
