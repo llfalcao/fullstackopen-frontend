@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import personService from '../services/persons';
 
 import Filter from '../components/phonebook/Filter';
 import PersonForm from '../components/phonebook/PersonForm';
@@ -19,23 +19,24 @@ const Phonebook = () => {
   });
 
   useEffect(() => {
-    axios
-      .get('https://yf9spi.sse.codesandbox.io/persons')
-      .then((response) => setPersons(response.data));
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
 
   const addPerson = (e) => {
     e.preventDefault();
-    if (newName === '') return;
+    if (newName === '' || newNumber === '') return;
     if (persons.some((p) => p.name.toLowerCase() === newName.toLowerCase())) {
-      return window.alert(`${newName} is already added to the phonebook`);
+      return alert(`${newName} is already added to the phonebook`);
     }
+
     const newPerson = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber,
     };
-    setPersons(persons.concat(newPerson));
+
+    personService
+      .create(newPerson)
+      .then((returnedPerson) => setPersons(persons.concat(returnedPerson)));
   };
 
   const handleFilter = (e) => setFilter(e.target.value);
