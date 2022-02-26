@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@300;400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arimo', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-main: #101112;
+    --fg-main: #eeeeee;
+    --link-main: rgb(104, 194, 247);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-main: #f4f4f4;
+    --fg-main: #101112;
+    --link-main: rgb(104, 194, 247);
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--fg-main);
+}
+
+a {
+  color: var(--link-main);
+}
+
+li {
+  margin-left: 1.5rem;
+}
+
+.note {
+  padding: 2px 0;
+}
+
+.note button {
+  margin-left: 8px;
+}
