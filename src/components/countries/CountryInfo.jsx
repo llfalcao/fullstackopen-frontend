@@ -8,7 +8,9 @@ const api = {
 
 const CountryInfo = ({ country }) => {
   const [weather, setWeather] = useState(null);
-  const location = `${country.capital[0]}, ${country.name.common}`;
+  const location = country.capital
+    ? `${country.capital[0]}, ${country.name.common}`
+    : country.name.common; // for places where there is no capital (e.g. Antarctica)
 
   useEffect(() => {
     axios.get(`${api.url}/?q=${location}&appid=${api.key}`).then((response) => {
@@ -22,21 +24,23 @@ const CountryInfo = ({ country }) => {
   return (
     <div>
       <h2>{country.name.common}</h2>
-      <p>Capital: {country.capital[0]}</p>
+      <p>Capital: {country.capital ? country.capital[0] : 'N/A'}</p>
       <p>Area: {country.area} m²</p>
       <p>Languages:</p>
-      <ul>
-        {Object.entries(country.languages).map(([key, value]) => (
-          <li key={key}>{value}</li>
-        ))}
-      </ul>
+      {country.languages && (
+        <ul>
+          {Object.entries(country.languages).map(([key, value]) => (
+            <li key={key}>{value}</li>
+          ))}
+        </ul>
+      )}
       <img
         width="200"
         src={country.flags.png}
         alt={`${country.name.common} flag`}
       />
-      <p>Weather in {country.capital[0]}</p>
-      {weather ? (
+      <h3>Weather in {location}</h3>
+      {weather && (
         <div>
           <p>Temperature: {weather.main.temp}ºC</p>
           <img
@@ -45,7 +49,7 @@ const CountryInfo = ({ country }) => {
           />
           <p>Wind: {weather.wind.speed} m/s</p>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
