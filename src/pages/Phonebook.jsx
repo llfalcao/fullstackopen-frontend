@@ -39,6 +39,15 @@ const Phonebook = () => {
       .then((returnedPerson) => setPersons(persons.concat(returnedPerson)));
   };
 
+  const deletePerson = (person) => {
+    const shouldDelete = window.confirm(`Delete ${person.name}?`);
+    if (shouldDelete) {
+      personService
+        .remove(person.id)
+        .then(() => setPersons(persons.filter((n) => n.id !== person.id)));
+    }
+  };
+
   const handleFilter = (e) => setFilter(e.target.value);
 
   return (
@@ -57,6 +66,7 @@ const Phonebook = () => {
         persons={persons}
         filter={filter}
         searchResults={searchResults}
+        deletePerson={deletePerson}
       />
     </div>
   );
