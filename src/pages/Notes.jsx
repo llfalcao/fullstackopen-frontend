@@ -22,13 +22,17 @@ const Notes = () => {
     e.preventDefault();
     if (newNote === '') return;
     const note = {
-      id: notes.length + 1,
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
     };
-    setNotes(notes.concat(note));
-    setNewNote('');
+
+    axios
+      .post('https://yf9spi.sse.codesandbox.io/notes', note)
+      .then((response) => {
+        setNotes(notes.concat(response.data));
+        setNewNote('');
+      });
   };
 
   return (
