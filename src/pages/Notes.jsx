@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import noteService from '../services/notes';
-import Note from '../components/notes/Notes';
+import Note from '../components/notes/Note';
+import Notification from '../components/notes/Notification';
+import NoteForm from '../components/notes/NoteForm';
 
 const Notes = () => {
   document.title = 'Full Stack Open - Notes';
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   useEffect(() => {
@@ -21,11 +24,13 @@ const Notes = () => {
       .update(id, changedNote)
       .then((returnedNote) =>
         setNotes(
-          notes.map((note) => (note.id !== note.data.id ? note : returnedNote)),
+          notes.map((n) => (n.id !== returnedNote.id ? n : returnedNote)),
         ),
       )
       .catch((error) => {
-        alert(`The note '${note.content}' was already deleted from the server`);
+        setErrorMessage(
+          `The note '${note.content}' was already deleted from the server`,
+        );
         setNotes(notes.filter((n) => n.id !== id));
       });
   };
@@ -49,6 +54,12 @@ const Notes = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
+      <NoteForm
+        addNote={addNote}
+        newNote={newNote}
+        handleNoteChange={(e) => setNewNote(e.target.value)}
+      />
       <input
         type="checkbox"
         id="important"
@@ -64,14 +75,6 @@ const Notes = () => {
           />
         ))}
       </ul>
-      <form onSubmit={addNote}>
-        <input
-          type="text"
-          value={newNote}
-          onChange={(e) => setNewNote(e.target.value)}
-        />
-        <button type="submit">Save</button>
-      </form>
     </div>
   );
 };
