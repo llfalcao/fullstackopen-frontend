@@ -22,25 +22,8 @@ const Notes = () => {
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   useEffect(() => {
-    noteService.getAll().then((response) => setNotes(response.data));
+    noteService.getAll().then((initialNotes) => setNotes(initialNotes));
   }, []);
-
-  const handleNoteChange = (e) => setNewNote(e.target.value);
-
-  const addNote = (e) => {
-    e.preventDefault();
-    if (newNote === '') return;
-    const note = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-    };
-
-    noteService.create(note).then((response) => {
-      setNotes(notes.concat(response.data));
-      setNewNote('');
-    });
-  };
 
   const toggleImportanceOf = async (id) => {
     const note = notes.find((n) => n.id === id);
@@ -48,13 +31,27 @@ const Notes = () => {
 
     noteService
       .update(id, changedNote)
-      .then((response) =>
+      .then((returnedNote) =>
         setNotes(
-          notes.map((note) =>
-            note.id !== response.data.id ? note : response.data,
-          ),
+          notes.map((note) => (note.id !== note.data.id ? note : returnedNote)),
         ),
       );
+  };
+
+  const addNote = (e) => {
+    e.preventDefault();
+    if (newNote === '') return;
+
+    const note = {
+      content: newNote,
+      date: new Date().toISOString(),
+      important: Math.random() < 0.5,
+    };
+
+    noteService.create(note).then((returnedNote) => {
+      setNotes(notes.concat(returnedNote));
+      setNewNote('');
+    });
   };
 
   return (
@@ -76,7 +73,11 @@ const Notes = () => {
         ))}
       </ul>
       <form onSubmit={addNote}>
-        <input type="text" value={newNote} onChange={handleNoteChange} />
+        <input
+          type="text"
+          value={newNote}
+          onChange={(e) => setNewNote(e.target.value)}
+        />
         <button type="submit">Save</button>
       </form>
     </div>
