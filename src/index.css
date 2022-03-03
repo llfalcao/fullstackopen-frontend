@@ -52,3 +52,18 @@ li {
   border-radius: 4px;
   width: max-content;
 }
+
+.notification {
+  animation: 0.5s fade ease-out;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
