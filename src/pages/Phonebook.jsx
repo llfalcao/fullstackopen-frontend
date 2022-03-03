@@ -25,13 +25,11 @@ const Phonebook = () => {
   }, []);
 
   useEffect(() => {
-    if (message.content) {
-      const notificationTimeout = setTimeout(() => {
-        setMessage({ content: '', isError: false });
-      }, 5000);
+    const notificationTimeout = setTimeout(() => {
+      setMessage({ content: '', isError: false });
+    }, 5000);
 
-      return () => clearTimeout(notificationTimeout);
-    }
+    return () => clearTimeout(notificationTimeout);
   }, [message.content]);
 
   const notify = (msg, isError) =>
