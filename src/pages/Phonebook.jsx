@@ -25,11 +25,17 @@ const Phonebook = () => {
   }, []);
 
   useEffect(() => {
-    const notificationTimeout = setTimeout(() => {
-      setMessage({ content: '', isError: false });
-    }, 5000);
-    return () => clearTimeout(notificationTimeout);
-  }, [message]);
+    if (message.content) {
+      const notificationTimeout = setTimeout(() => {
+        setMessage({ content: '', isError: false });
+      }, 5000);
+
+      return () => clearTimeout(notificationTimeout);
+    }
+  }, [message.content]);
+
+  const notify = (msg, isError) =>
+    setMessage({ content: msg, isError: isError || false });
 
   const updatePerson = (match, personObject) => {
     const msg = `${newName} is already added to the phonebook.\nReplace the old number with the new one?`;
@@ -42,13 +48,10 @@ const Phonebook = () => {
         setPersons(
           persons.map((p) => (p.id !== returnedPerson.id ? p : returnedPerson)),
         );
-        setMessage({ ...message, content: `Updated ${returnedPerson.name}` });
+        notify(`Updated ${returnedPerson.name}`);
       })
       .catch((error) => {
-        setMessage({
-          content: `${match.name} has already been removed from the server`,
-          isError: true,
-        });
+        notify(`${match.name} has already been removed from the server`, true);
         setPersons(persons.filter((p) => p.id !== match.id));
       });
     return;
@@ -63,13 +66,12 @@ const Phonebook = () => {
     });
 
     if (match) {
-      updatePerson(match, personObject);
-      return;
+      return updatePerson(match, personObject);
     }
 
     personService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
-      setMessage({ ...message, content: `Added ${returnedPerson.name}` });
+      notify(`Added ${returnedPerson.name}`);
     });
   };
 
@@ -80,13 +82,13 @@ const Phonebook = () => {
         .remove(person.id)
         .then(() => {
           setPersons(persons.filter((n) => n.id !== person.id));
-          setMessage({ ...message, content: `Deleted ${person.name}` });
+          notify(`Deleted ${person.name}`);
         })
         .catch((error) => {
-          setMessage({
-            content: `${person.name} has already been removed from the server`,
-            isError: true,
-          });
+          notify(
+            `${person.name} has already been removed from the server`,
+            true,
+          );
           setPersons(persons.filter((p) => p.id !== person.id));
         });
     }
