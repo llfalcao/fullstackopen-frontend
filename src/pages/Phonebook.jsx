@@ -41,16 +41,18 @@ const Phonebook = () => {
     if (!shouldUpdate) return;
 
     personService
-      .update(match.id, personObject)
+      .update(match._id, personObject)
       .then((returnedPerson) => {
         setPersons(
-          persons.map((p) => (p.id !== returnedPerson.id ? p : returnedPerson)),
+          persons.map((p) =>
+            p._id !== returnedPerson._id ? p : returnedPerson,
+          ),
         );
         notify(`Updated ${returnedPerson.name}`);
       })
       .catch((error) => {
         notify(`${match.name} has already been removed from the server`, true);
-        setPersons(persons.filter((p) => p.id !== match.id));
+        setPersons(persons.filter((p) => p._id !== match._id));
       });
     return;
   };
@@ -77,9 +79,9 @@ const Phonebook = () => {
     const shouldDelete = window.confirm(`Delete ${person.name}?`);
     if (shouldDelete) {
       personService
-        .remove(person.id)
+        .remove(person._id)
         .then(() => {
-          setPersons(persons.filter((n) => n.id !== person.id));
+          setPersons(persons.filter((n) => n._id !== person._id));
           notify(`Deleted ${person.name}`);
         })
         .catch((error) => {
@@ -87,7 +89,7 @@ const Phonebook = () => {
             `${person.name} has already been removed from the server`,
             true,
           );
-          setPersons(persons.filter((p) => p.id !== person.id));
+          setPersons(persons.filter((p) => p._id !== person._id));
         });
     }
   };

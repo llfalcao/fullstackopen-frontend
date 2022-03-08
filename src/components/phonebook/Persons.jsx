@@ -7,7 +7,7 @@ const Persons = ({ persons, filter, searchResults, deletePerson }) => {
     <ul>
       {personsToShow.map((person) => (
         <Person
-          key={person.id}
+          key={person._id}
           name={person.name}
           number={person.number}
           deletePerson={() => deletePerson(person)}
