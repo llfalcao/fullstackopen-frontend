@@ -43,21 +43,33 @@ const Phonebook = () => {
     personService
       .update(match.id, personObject)
       .then((returnedPerson) => {
+        if (!returnedPerson) {
+          notify(
+            `${match.name} has already been removed from the server`,
+            true,
+          );
+          return setPersons(persons.filter((p) => p.id !== match.id));
+        }
+
         setPersons(
           persons.map((p) => (p.id !== returnedPerson.id ? p : returnedPerson)),
         );
         notify(`Updated ${returnedPerson.name}`);
       })
-      .catch((error) => {
-        notify(`${match.name} has already been removed from the server`, true);
-        setPersons(persons.filter((p) => p.id !== match.id));
-      });
+      .catch((error) => notify(error.response.data, true));
     return;
   };
 
   const addPerson = (e) => {
     e.preventDefault();
-    if (newName === '' || newNumber === '') return;
+    if (!newName && !newNumber)
+      return notify(
+        { name: 'Name is missing', number: 'Number is missing' },
+        true,
+      );
+    else if (!newName) return notify('Name is missing', true);
+    else if (!newNumber) return notify('Number is missing', true);
+
     const personObject = { name: newName, number: newNumber };
     const match = persons.find((p) => {
       return p.name.toLowerCase() === newName.toLowerCase();
@@ -67,10 +79,13 @@ const Phonebook = () => {
       return updatePerson(match, personObject);
     }
 
-    personService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      notify(`Added ${returnedPerson.name}`);
-    });
+    personService
+      .create(personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        notify(`Added ${returnedPerson.name}`);
+      })
+      .catch((error) => notify(error.response.data, true));
   };
 
   const deletePerson = (person) => {
@@ -97,7 +112,7 @@ const Phonebook = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message.content} error={message.isError} />
+      <Notification content={message.content} error={message.isError} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <PersonForm
         newName={newName}
