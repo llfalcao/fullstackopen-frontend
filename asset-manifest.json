@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/fullstackopen-frontend/static/css/main.3fb6cbc7.css",
-    "main.js": "/fullstackopen-frontend/static/js/main.17b8737f.js",
+    "main.js": "/fullstackopen-frontend/static/js/main.705b86dd.js",
     "index.html": "/fullstackopen-frontend/index.html",
     "main.3fb6cbc7.css.map": "/fullstackopen-frontend/static/css/main.3fb6cbc7.css.map",
-    "main.17b8737f.js.map": "/fullstackopen-frontend/static/js/main.17b8737f.js.map"
+    "main.705b86dd.js.map": "/fullstackopen-frontend/static/js/main.705b86dd.js.map"
   },
   "entrypoints": [
     "static/css/main.3fb6cbc7.css",
-    "static/js/main.17b8737f.js"
+    "static/js/main.705b86dd.js"
   ]
 }
