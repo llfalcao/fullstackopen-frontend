@@ -6,6 +6,7 @@ import Anecdotes from './pages/Anecdotes';
 import Courses from './pages/Courses';
 import Notes from './pages/Notes';
 import Phonebook from './pages/Phonebook';
+import PhonebookInfo from './pages/PhonebookInfo';
 import Countries from './pages/Countries';
 
 const Header = () => {
@@ -23,7 +24,10 @@ export default function App() {
           <Route path="anecdotes" element={<Anecdotes />} />
           <Route path="courses" element={<Courses />} />
           <Route path="notes" element={<Notes />} />
-          <Route path="phonebook" element={<Phonebook />} />
+          <Route path="phonebook">
+            <Route index element={<Phonebook />} />
+            <Route path="info" element={<PhonebookInfo />} />
+          </Route>
           <Route path="countries" element={<Countries />} />
         </Route>
         <Route path="*" element={<h1>404 not found</h1>} />

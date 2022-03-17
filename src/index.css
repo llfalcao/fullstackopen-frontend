@@ -67,3 +67,15 @@ li {
     transform: scale(1);
   }
 }
+
+.loadingIcon {
+  margin: 8px;
+  animation: spin 1s linear infinite;
+  fill: var(--fg-main);
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
