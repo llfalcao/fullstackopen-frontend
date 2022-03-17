@@ -10,7 +10,7 @@ import PhonebookInfo from './pages/PhonebookInfo';
 import Countries from './pages/Countries';
 
 const Header = () => {
-  return <Link to="/">Home</Link>;
+  return <Link to="/fullstackopen-frontend">Home</Link>;
 };
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/">
+        <Route path="/fullstackopen-frontend">
           <Route index element={<Home />} />
           <Route path="unicafe" element={<Unicafe />} />
           <Route path="anecdotes" element={<Anecdotes />} />
