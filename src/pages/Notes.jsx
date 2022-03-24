@@ -32,9 +32,7 @@ const Notes = () => {
         setErrorMessage(
           `The note '${note.content}' was already deleted from the server`,
         );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
+        setTimeout(() => setErrorMessage(null), 5000);
         setNotes(notes.filter((n) => n.id !== id));
       });
   };
@@ -49,10 +47,17 @@ const Notes = () => {
       important: Math.random() < 0.5,
     };
 
-    noteService.create(note).then((returnedNote) => {
-      setNotes(notes.concat(returnedNote));
-      setNewNote('');
-    });
+    noteService
+      .create(note)
+      .then((returnedNote) => {
+        setNotes(notes.concat(returnedNote));
+        setNewNote('');
+      })
+      .catch((error) => {
+        const { content: msg } = error.response.data;
+        setErrorMessage(msg);
+        setTimeout(() => setErrorMessage(null), 5000);
+      });
   };
 
   return (

@@ -62,13 +62,16 @@ const Phonebook = () => {
 
   const addPerson = (e) => {
     e.preventDefault();
-    if (!newName && !newNumber)
+    if (!newName && !newNumber) {
       return notify(
         { name: 'Name is missing', number: 'Number is missing' },
         true,
       );
-    else if (!newName) return notify('Name is missing', true);
-    else if (!newNumber) return notify('Number is missing', true);
+    } else if (!newName) {
+      return notify('Name is missing', true);
+    } else if (!newNumber) {
+      return notify('Number is missing', true);
+    }
 
     const personObject = { name: newName, number: newNumber };
     const match = persons.find((p) => {
