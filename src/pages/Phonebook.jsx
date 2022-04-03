@@ -34,7 +34,7 @@ const Phonebook = () => {
 
   const notify = (msg, isError) =>
     setMessage({ content: msg, isError: isError || false });
-
+    
   const updatePerson = (match, personObject) => {
     const msg = `${newName} is already added to the phonebook.\nReplace the old number with the new one?`;
     const shouldUpdate = window.confirm(msg);
@@ -56,7 +56,7 @@ const Phonebook = () => {
         );
         notify(`Updated ${returnedPerson.name}`);
       })
-      .catch((error) => notify(error.response.data, true));
+      .catch((error) => notify(error.response.data.errors, true));
     return;
   };
 
@@ -88,7 +88,7 @@ const Phonebook = () => {
         setPersons(persons.concat(returnedPerson));
         notify(`Added ${returnedPerson.name}`);
       })
-      .catch((error) => notify(error.response.data, true));
+      .catch((error) => notify(error.response.data.errors, true));
   };
 
   const deletePerson = (person) => {
