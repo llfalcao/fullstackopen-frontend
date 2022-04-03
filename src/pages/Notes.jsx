@@ -54,7 +54,7 @@ const Notes = () => {
         setNewNote('');
       })
       .catch((error) => {
-        const { content: msg } = error.response.data;
+        const { content: msg } = error.response.data.errors;
         setErrorMessage(msg);
         setTimeout(() => setErrorMessage(null), 5000);
       });
