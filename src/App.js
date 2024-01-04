@@ -8,6 +8,7 @@ import Notes from './pages/Notes';
 import Phonebook from './pages/Phonebook';
 import PhonebookInfo from './pages/PhonebookInfo';
 import Countries from './pages/Countries';
+import Blogs from './pages/Blogs';
 
 const Header = () => {
   return <Link to="/fullstackopen-frontend">Home</Link>;
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="unicafe" element={<Unicafe />} />
           <Route path="anecdotes" element={<Anecdotes />} />
           <Route path="courses" element={<Courses />} />
+          <Route path="blogs" element={<Blogs />} />
           <Route path="notes" element={<Notes />} />
           <Route path="phonebook">
             <Route index element={<Phonebook />} />

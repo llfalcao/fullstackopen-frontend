@@ -20,6 +20,7 @@ const Home = () => {
         <Link to="anecdotes">Anecdotes</Link>
         <Link to="unicafe">Unicafe</Link>
         <Link to="courses">Courses</Link>
+        <Link to="blogs">Blogs</Link>
         <Link to="notes">Notes</Link>
         <Link to="phonebook">Phonebook</Link>
         <Link to="countries">Countries</Link>

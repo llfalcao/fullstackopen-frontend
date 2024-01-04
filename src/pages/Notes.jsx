@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import noteService from '../services/notes';
 import Note from '../components/notes/Note';
-import Notification from '../components/notes/Notification';
+import Notification from '../components/Notification';
 import NoteForm from '../components/notes/NoteForm';
 import Footer from '../components/notes/Footer';
 import loginService from '../services/login';
@@ -84,7 +84,6 @@ const Notes = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log(`logging in with ${username}, ${password}`);
 
     try {
       const user = await loginService.login({ username, password });
