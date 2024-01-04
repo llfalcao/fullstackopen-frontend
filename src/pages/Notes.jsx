@@ -4,6 +4,7 @@ import Note from '../components/notes/Note';
 import Notification from '../components/notes/Notification';
 import NoteForm from '../components/notes/NoteForm';
 import Footer from '../components/notes/Footer';
+import loginService from '../services/login';
 
 const Notes = () => {
   document.title = 'Full Stack Open - Notes';
@@ -11,10 +12,20 @@ const Notes = () => {
   const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
+
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   useEffect(() => {
-    noteService.getAll().then((initialNotes) => setNotes(initialNotes));
+    const controller = new AbortController();
+
+    noteService.getAll(controller.signal).then((initialNotes) => {
+      setNotes(initialNotes);
+    });
+
+    return () => controller.abort();
   }, []);
 
   const toggleImportanceOf = async (id) => {
@@ -25,10 +36,12 @@ const Notes = () => {
       .update(id, changedNote)
       .then((returnedNote) =>
         setNotes(
-          notes.map((n) => (n.id !== returnedNote.id ? n : returnedNote)),
+          notes.map((note) => {
+            return note.id !== returnedNote.id ? note : returnedNote;
+          }),
         ),
       )
-      .catch((error) => {
+      .catch((_error) => {
         setErrorMessage(
           `The note '${note.content}' was already deleted from the server`,
         );
@@ -37,8 +50,8 @@ const Notes = () => {
       });
   };
 
-  const addNote = (e) => {
-    e.preventDefault();
+  const addNote = (event) => {
+    event.preventDefault();
     if (newNote === '') return;
 
     const note = {
@@ -60,15 +73,62 @@ const Notes = () => {
       });
   };
 
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    console.log(`logging in with ${username}, ${password}`);
+
+    try {
+      const user = await loginService.login({ username, password });
+      setUser(user);
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      setErrorMessage('Wrong credentials');
+      setTimeout(() => setErrorMessage(null), 5000);
+    }
+  };
+
+  const loginForm = () => (
+    <form onSubmit={handleLogin}>
+      <legend>Login</legend>
+      <div>
+        <label htmlFor="username">Username: </label>
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="password">Password: </label>
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  );
+
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      <NoteForm
-        addNote={addNote}
-        newNote={newNote}
-        handleNoteChange={(e) => setNewNote(e.target.value)}
-      />
+      {user === null ? (
+        loginForm()
+      ) : (
+        <div>
+          <p>{user.name} logged in</p>{' '}
+          <NoteForm
+            addNote={addNote}
+            newNote={newNote}
+            handleNoteChange={({ target }) => setNewNote(target.value)}
+          />
+        </div>
+      )}
       <input
         type="checkbox"
         id="important"
