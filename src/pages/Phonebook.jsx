@@ -4,7 +4,7 @@ import personService from '../services/persons';
 import Filter from '../components/phonebook/Filter';
 import PersonForm from '../components/phonebook/PersonForm';
 import Persons from '../components/phonebook/Persons';
-import Notification from '../components/phonebook/Notification';
+import Notification from '../components/Notification';
 
 const Phonebook = () => {
   document.title = 'Full Stack Open - Phonebook';
@@ -34,7 +34,7 @@ const Phonebook = () => {
 
   const notify = (msg, isError) =>
     setMessage({ content: msg, isError: isError || false });
-    
+
   const updatePerson = (match, personObject) => {
     const msg = `${newName} is already added to the phonebook.\nReplace the old number with the new one?`;
     const shouldUpdate = window.confirm(msg);

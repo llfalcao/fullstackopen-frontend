@@ -11,7 +11,7 @@ const Notes = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState({});
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -51,10 +51,11 @@ const Notes = () => {
         ),
       )
       .catch((_error) => {
-        setErrorMessage(
-          `The note '${note.content}' was already deleted from the server`,
-        );
-        setTimeout(() => setErrorMessage(null), 5000);
+        setNotification({
+          content: `The note '${note.content}' was already deleted from the server`,
+          error: true,
+        });
+        setTimeout(() => setNotification({}), 5000);
         setNotes(notes.filter((n) => n.id !== id));
       });
   };
@@ -76,9 +77,9 @@ const Notes = () => {
         setNewNote('');
       })
       .catch((error) => {
-        const { content: msg } = error.response.data.errors;
-        setErrorMessage(msg);
-        setTimeout(() => setErrorMessage(null), 5000);
+        const { content } = error.response.data.errors;
+        setNotification({ content, error: true });
+        setTimeout(() => setNotification(null), 5000);
       });
   };
 
@@ -93,8 +94,8 @@ const Notes = () => {
       setUsername('');
       setPassword('');
     } catch (error) {
-      setErrorMessage('Wrong credentials');
-      setTimeout(() => setErrorMessage(null), 5000);
+      setNotification({ content: 'Wrong username or password', error: true });
+      setTimeout(() => setNotification({}), 5000);
     }
   };
 
@@ -132,7 +133,7 @@ const Notes = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
+      <Notification {...notification} />
       {user === null ? (
         loginForm()
       ) : (

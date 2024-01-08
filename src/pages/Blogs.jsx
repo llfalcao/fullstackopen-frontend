@@ -7,7 +7,7 @@ import Blog from '../components/blogs/Blog';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState({});
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -42,8 +42,8 @@ const Blogs = () => {
       setUsername('');
       setPassword('');
     } catch (error) {
-      setErrorMessage('Wrong credentials');
-      setTimeout(() => setErrorMessage(null), 5000);
+      setNotification({ content: 'Wrong username or password', error: true });
+      setTimeout(() => setNotification({}), 5000);
     }
   };
 
@@ -78,10 +78,15 @@ const Blogs = () => {
     localStorage.removeItem('loggedBlogAppUser');
   };
 
+  const sendNotification = (content) => {
+    setNotification(content);
+    setTimeout(() => setNotification({}), 5000);
+  };
+
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={errorMessage} />
+      <Notification {...notification} />
       {user === null ? (
         loginForm()
       ) : (
@@ -92,7 +97,10 @@ const Blogs = () => {
               logout
             </button>
           </div>
-          <BlogForm updateBlogs={updateBlogs} />
+          <BlogForm
+            updateBlogs={updateBlogs}
+            sendNotification={sendNotification}
+          />
           <ul>
             {blogs.map((blog) => (
               <Blog blog={blog} />

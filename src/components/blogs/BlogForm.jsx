@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../../services/blogs';
 
-const BlogForm = ({ updateBlogs }) => {
+const BlogForm = ({ updateBlogs, sendNotification }) => {
   const [blog, setBlog] = useState({});
 
   const handleSubmit = async (event) => {
@@ -9,6 +9,9 @@ const BlogForm = ({ updateBlogs }) => {
     const newBlog = await blogService.create(blog);
 
     if (newBlog) {
+      sendNotification({
+        content: `A new blog "${blog.title}" has been added`,
+      });
       setBlog({});
       updateBlogs();
     }
