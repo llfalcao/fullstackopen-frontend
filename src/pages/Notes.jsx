@@ -123,6 +123,12 @@ const Notes = () => {
     </form>
   );
 
+  const handleLogout = () => {
+    noteService.setToken(null);
+    setUser(null);
+    localStorage.removeItem('loggedNoteAppUser');
+  };
+
   return (
     <div>
       <h1>Notes</h1>
@@ -131,7 +137,12 @@ const Notes = () => {
         loginForm()
       ) : (
         <div>
-          <p>{user.name} logged in</p>{' '}
+          <div>
+            <p>{user.name} logged in</p>
+            <button type="button" onClick={handleLogout}>
+              logout
+            </button>
+          </div>
           <NoteForm
             addNote={addNote}
             newNote={newNote}
