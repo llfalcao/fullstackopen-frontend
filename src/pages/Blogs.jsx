@@ -1,21 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import blogService from '../services/blogs';
 import loginService from '../services/login';
 import Notification from '../components/Notification';
 
 const Blogs = () => {
+  const [blogs, setBlogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    blogService.getAll(controller.signal).then((data) => setBlogs(data));
+
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
+
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log(username, password);
     try {
       const user = await loginService.login({ username, password });
-      console.log(user);
-      window.localStorage.setItem('loggedBlogsAppUser', JSON.stringify(user));
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
       setUsername('');
@@ -51,11 +67,36 @@ const Blogs = () => {
     </form>
   );
 
+  const handleLogout = () => {
+    blogService.setToken(null);
+    setUser(null);
+    localStorage.removeItem('loggedBlogAppUser');
+  };
+
   return (
     <div>
       <h1>Blogs</h1>
       <Notification message={errorMessage} />
-      {user === null ? loginForm() : <ul>list of blogs</ul>}
+      {user === null ? (
+        loginForm()
+      ) : (
+        <div>
+          <div>
+            <p>{user.name} logged in</p>
+            <button type="button" onClick={handleLogout}>
+              logout
+            </button>
+          </div>
+          <ul>
+            {blogs.map((blog) => (
+              <li key={blog.id}>
+                <p>{blog.author}</p>
+                <p>{blog.title}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
