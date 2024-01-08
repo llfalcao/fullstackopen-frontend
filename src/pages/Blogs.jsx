@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import blogService from '../services/blogs';
 import loginService from '../services/login';
 import Notification from '../components/Notification';
+import BlogForm from '../components/blogs/BlogForm';
+import Blog from '../components/blogs/Blog';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,9 +14,7 @@ const Blogs = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-
     blogService.getAll(controller.signal).then((data) => setBlogs(data));
-
     return () => controller.abort();
   }, []);
 
@@ -26,6 +26,11 @@ const Blogs = () => {
       blogService.setToken(user.token);
     }
   }, []);
+
+  const updateBlogs = async () => {
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -87,12 +92,10 @@ const Blogs = () => {
               logout
             </button>
           </div>
+          <BlogForm updateBlogs={updateBlogs} />
           <ul>
             {blogs.map((blog) => (
-              <li key={blog.id}>
-                <p>{blog.author}</p>
-                <p>{blog.title}</p>
-              </li>
+              <Blog blog={blog} />
             ))}
           </ul>
         </div>
